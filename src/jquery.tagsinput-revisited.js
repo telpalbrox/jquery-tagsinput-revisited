@@ -157,7 +157,6 @@
 
 			var markup = '<div id="' + id + '_tagsinput" class="tagsinput"><div id="' + id + '_addTag">';
 
-			console.log($(data.real_input).attr('type'));
 			if (settings.interactive) {
 				markup = markup + '<input id="' + id + '_tag" type="' + ($(data.real_input).attr('type') ? $(data.real_input).attr('type') : 'text') + '" value="" placeholder="' + settings.placeholder + '">';
 			}
@@ -201,7 +200,7 @@
 					return false;
 				});
 				
-				$(data.fake_input).on('keypress', data, function(event) {
+				$(data.fake_input).on('textInput', data, function(event) {
 					if (_checkDelimiter(event)) {
 						$(this).autocomplete("close");
 					}
@@ -218,8 +217,22 @@
 			}
 			
 			// If a user types a delimiter create a new tag
-			$(data.fake_input).on('keypress', data, function(event) {
+			$(data.fake_input).on('textInput', data, function(event) {
 				if (_checkDelimiter(event)) {
+					event.preventDefault();
+					
+					$(event.data.real_input).addTag($(event.data.fake_input).val(), {
+						focus: true,
+						unique: settings.unique
+					});
+					
+					return false;
+				}
+			});
+
+			// If a user click the enter key
+			$(data.fake_input).on('keypress', data, function(event) {
+				if (event.which === 13) {
 					event.preventDefault();
 					
 					$(event.data.real_input).addTag($(event.data.fake_input).val(), {
@@ -340,18 +353,14 @@
  
 	var _checkDelimiter = function(event) {
 		var found = false;
-		
-		if (event.which === 13) {
-			return true;
-		}
 
 		if (typeof event.data.delimiter === 'string') {
-			if (event.which === event.data.delimiter.charCodeAt(0)) {
+			if (event.originalEvent.data === event.data.delimiter) {
 				found = true;
 			}
 		} else {
 			$.each(event.data.delimiter, function(index, delimiter) {
-				if (event.which === delimiter.charCodeAt(0)) {
+				if (event.originalEvent.data === delimiter) {
 					found = true;
 				}
 			});
