@@ -157,8 +157,9 @@
 
 			var markup = '<div id="' + id + '_tagsinput" class="tagsinput"><div id="' + id + '_addTag">';
 
+			console.log($(data.real_input).attr('type'));
 			if (settings.interactive) {
-				markup = markup + '<input id="' + id + '_tag" value="" placeholder="' + settings.placeholder + '">';
+				markup = markup + '<input id="' + id + '_tag" type="' + ($(data.real_input).attr('type') ? $(data.real_input).attr('type') : 'text') + '" value="" placeholder="' + settings.placeholder + '">';
 			}
 
 			$(markup).insertAfter(this);

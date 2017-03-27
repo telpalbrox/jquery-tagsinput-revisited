@@ -55,6 +55,9 @@
 			
 			<label>Tags input with array of delimiters (comma and semicolon):</label>
 			<input id="form-tags-6" name="tags-6" type="text" value="more;pizza">
+
+			<label>Emails tags:</label>
+			<input id="form-tags-7" name="tags-7" type="email" value="test@example.com">
 		</form>
 		
 		<script type="text/javascript">
@@ -98,6 +101,10 @@
 				
 				$('#form-tags-6').tagsInput({
 					'delimiter': [',', ';'] 
+				});
+				
+				$('#form-tags-7').tagsInput({
+					'delimiter': [',', ';', ' '] 
 				});
 			});
 		</script>
