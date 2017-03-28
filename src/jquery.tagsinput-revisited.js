@@ -189,6 +189,9 @@
 				$(data.holder).removeClass('focus');
 			});
 
+			var ua = navigator.userAgent;
+			var isAndroid = ((ua.indexOf('Mozilla/5.0') > -1 && ua.indexOf('Android ') > -1 && ua.indexOf('AppleWebKit') > -1) && (ua.indexOf('Chrome') > -1));
+
 			if (settings.autocomplete !== null && jQuery.ui.autocomplete !== undefined) {
 				$(data.fake_input).autocomplete(settings.autocomplete);
 				$(data.fake_input).on('autocompleteselect', data, function(event, ui) {
@@ -200,7 +203,7 @@
 					return false;
 				});
 				
-				$(data.fake_input).on('textInput', data, function(event) {
+				$(data.fake_input).on(isAndroid ? 'textInput' : 'keypress', data, function(event) {
 					if (_checkDelimiter(event)) {
 						$(this).autocomplete("close");
 					}
@@ -215,9 +218,9 @@
 					return false;
 				});
 			}
-			
+
 			// If a user types a delimiter create a new tag
-			$(data.fake_input).on('textInput', data, function(event) {
+			$(data.fake_input).on(isAndroid ? 'textInput' : 'keypress', data, function(event) {
 				if (_checkDelimiter(event)) {
 					event.preventDefault();
 					
@@ -353,14 +356,15 @@
  
 	var _checkDelimiter = function(event) {
 		var found = false;
+		var inputCharacter = event.originalEvent.data || String.fromCharCode(event.which);
 
 		if (typeof event.data.delimiter === 'string') {
-			if (event.originalEvent.data === event.data.delimiter) {
+			if (inputCharacter === event.data.delimiter) {
 				found = true;
 			}
 		} else {
 			$.each(event.data.delimiter, function(index, delimiter) {
-				if (event.originalEvent.data === delimiter) {
+				if (inputCharacter === delimiter) {
 					found = true;
 				}
 			});
